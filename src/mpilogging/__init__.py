@@ -1,2 +1,3 @@
 from .mpiProcFilter import MPIProcFilter
 from .mpiScatteredFileHandler import MPIScatteredFileHandler
+from .mpiGatheredFileHandler import MPIGatheredFileHandler
