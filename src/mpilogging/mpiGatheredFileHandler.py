@@ -7,7 +7,7 @@ class MPIGatheredFileHandler(logging.FileHandler):
     and writes them to a disk file on a single rank.
     """
 
-    def __init__(self, filename, **kwargs):
+    def __init__(self, filename, write_rank=0, **kwargs):
         """Open the specified file and use it as the stream for logging.
 
         Warnings
@@ -21,15 +21,18 @@ class MPIGatheredFileHandler(logging.FileHandler):
         ----------
         filename : str
             The name of the file to open for logging.
+        write_rank : int
+            MPI rank that actually writes to the file (default: 0).
         **kwargs
             Keyword arguments are as described in the docstring of
             `~logging.FileHandler`.
         """
+        self.write_rank = write_rank
         super().__init__(filename, **kwargs)
 
     def emit(self, record):
         comm = MPI.COMM_WORLD
-        records = comm.gather(record, root=0)
-        if comm.rank == 0:
+        records = comm.gather(record, root=self.write_rank)
+        if comm.rank == self.write_rank:
             for record in records:
                 super().emit(record)
