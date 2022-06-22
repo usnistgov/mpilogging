@@ -1,7 +1,7 @@
 import logging
 from mpi4py import MPI
 
-class MPIProcFilter(logging.Filter):
+class MPIRankFilter(logging.Filter):
     """
     A filter class that injects information about MPI processes.
 

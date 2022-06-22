@@ -1,3 +1,3 @@
-from .mpiProcFilter import MPIProcFilter
+from .mpiRankFilter import MPIRankFilter
 from .mpiScatteredFileHandler import MPIScatteredFileHandler
 from .mpiGatheredFileHandler import MPIGatheredFileHandler
