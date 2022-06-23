@@ -1,6 +1,7 @@
 import logging
-import logging.config
 from mpi4py import MPI
+
+from mpilogging import MPIScatteredFileHandler, MPIGatheredFileHandler, MPIRankFilter
 
 def test_scattered_logging(mpi_tmpdir):
     """Test that log messages are recorded in a separate file by rank
@@ -8,32 +9,15 @@ def test_scattered_logging(mpi_tmpdir):
 
     # mpi_tmpdir is a pathlib.Path
     filepattern = str(mpi_tmpdir / "mpi.rank%(mpirank)d.log")
-    config = {
-        "version": 1,
-        "formatters": {
-            "brief": {
-                "format": "%(levelname)s : %(message)s"
-            }
-        },
-        "handlers": {
-            "scatterfile": {
-                "class": "mpilogging.MPIScatteredFileHandler",
-                "formatter": "brief",
-                "filepattern": filepattern
-            }
-        },
-        "loggers": {
-            "mpilogging": {
-                "level": "DEBUG",
-                "handlers": ["scatterfile"]
-            }
-        }
-    }
-
-    logging.config.dictConfig(config)
 
     log = logging.getLogger("mpilogging")
-    
+
+    handler = MPIScatteredFileHandler(filepattern=filepattern)
+    formatter = logging.Formatter("%(levelname)s : %(message)s")
+    handler.setFormatter(formatter)
+    log.addHandler(handler)
+    log.setLevel(logging.DEBUG)
+
     log.debug("a debug message")
     log.info("an info message")
     
@@ -56,38 +40,17 @@ def test_gathered_logging(mpi_tmpdir):
 
     # mpi_tmpdir is a pathlib.Path
     filename = str(mpi_tmpdir / "mpi.log")
-    config = {
-        "version": 1,
-        "formatters": {
-            "brief": {
-                "format": "%(mpirank)d of %(mpisize)d : %(levelname)s : %(message)s"
-            }
-        },
-        "filters": {
-            "mpi_filter": {
-                "()": "mpilogging.MPIRankFilter"
-            }
-        },
-        "handlers": {
-            "gatherfile": {
-                "class": "mpilogging.MPIGatheredFileHandler",
-                "filters": ["mpi_filter"],
-                "formatter": "brief",
-                "filename": filename
-            }
-        },
-        "loggers": {
-            "mpilogging": {
-                "level": "DEBUG",
-                "handlers": ["gatherfile"]
-            }
-        }
-    }
-
-    logging.config.dictConfig(config)
-
     log = logging.getLogger("mpilogging")
     
+    handler = MPIGatheredFileHandler(filename=filename)
+    filter = MPIRankFilter()
+    handler.addFilter(filter)
+    formatter = logging.Formatter("%(mpirank)d of %(mpisize)d : %(levelname)s : %(message)s")
+    handler.setFormatter(formatter)
+    log.addHandler(handler)
+
+    log.setLevel(logging.DEBUG)
+
     log.debug("a debug message")
     log.info("an info message")
     

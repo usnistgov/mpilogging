@@ -21,27 +21,13 @@ The simplest way to log from multiple MPI ranks is with a
 
 ```python
 import logging
-import logging.config
-
-config = {
-    "version": 1,
-    "handlers": {
-        "scatterfile": {
-            "class": "mpilogging.MPIScatteredFileHandler",
-            "filepattern": "mpilogging.%(mpirank)d_of_%(mpisize)d.log"
-        }
-    },
-    "loggers": {
-        "mpilogging": {
-            "level": "DEBUG",
-            "handlers": ["scatterfile"]
-        }
-    }
-}
-
-logging.config.dictConfig(config)
+from mpilogging import MPIScatteredFileHandler
 
 log = logging.getLogger("mpilogging")
+
+handler = MPIScatteredFileHandler(filepattern="mpilogging.%(mpirank)d_of_%(mpisize)d.log")
+log.addHandler(handler)
+log.setLevel(logging.DEBUG)
 
 log.debug("a debug message")
 log.info("an info message")
@@ -66,39 +52,18 @@ use an `MPIRankFilter` to add context to each log message,
 
 ```
 import logging
-import logging.config
-
-config = {
-    "version": 1,
-    "formatters": {
-        "brief": {
-            "format": "%(mpirank)d of %(mpisize)d : %(levelname)s : %(message)s"
-        }
-    },
-    "filters": {
-        "mpi_filter": {
-            "()": "mpilogging.MPIRankFilter"
-        }
-    },
-    "handlers": {
-        "gatherfile": {
-            "class": "mpilogging.MPIGatheredFileHandler",
-            "filters": ["mpi_filter"],
-            "formatter": "brief",
-            "filename": "mpilogging.log"
-        }
-    },
-    "loggers": {
-        "mpilogging": {
-            "level": "DEBUG",
-            "handlers": ["gatherfile"]
-        }
-    }
-}
-
-logging.config.dictConfig(config)
+from mpilogging import MPIGatheredFileHandler, MPIRankFilter
 
 log = logging.getLogger("mpilogging")
+
+handler = MPIGatheredFileHandler(filename="mpilogging.log")
+filter = MPIRankFilter()
+handler.addFilter(filter)
+formatter = logging.Formatter("%(mpirank)d of %(mpisize)d : %(levelname)s : %(message)s")
+handler.setFormatter(formatter)
+log.addHandler(handler)
+
+log.setLevel(logging.DEBUG)
 
 log.debug("a debug message")
 log.info("an info message")
