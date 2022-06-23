@@ -5,6 +5,8 @@ from mpi4py import MPI
 def test_scattered_logging(mpi_tmpdir):
     """Test that log messages are recorded in a separate file by rank
     """
+
+    # mpi_tmpdir is a pathlib.Path
     filepattern = str(mpi_tmpdir / "mpi.rank%(mpirank)d.log")
     config = {
         "version": 1,
@@ -51,6 +53,8 @@ def test_scattered_logging(mpi_tmpdir):
 def test_gathered_logging(mpi_tmpdir):
     """Test that log messages are recorded in a single file for all ranks
     """
+
+    # mpi_tmpdir is a pathlib.Path
     filename = str(mpi_tmpdir / "mpi.log")
     config = {
         "version": 1,
