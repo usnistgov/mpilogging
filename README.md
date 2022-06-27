@@ -50,7 +50,7 @@ An `MPIGatheredFileHandler` may be used if it is desired to collect all log
 messages from all ranks in a single file.  In this case, it is advisable to
 use an `MPIRankFilter` to add context to each log message,
 
-```
+```python
 import logging
 from mpilogging import MPIGatheredFileHandler, MPIRankFilter
 
