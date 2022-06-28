@@ -26,6 +26,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
+        sudo apt-get --yes update
+        sudo apt-get --yes install mpi-default-dev
         python -m pip install --upgrade pip
         python -m pip install flake8 pytest pytest-mpi mpi4py
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
