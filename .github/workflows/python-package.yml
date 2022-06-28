@@ -49,7 +49,7 @@ jobs:
       run: |
         pytest
         mpirun -np 2 pytest
-    - name: Test with pytest - 4 ranks
+    - name: Test with pytest - 3 ranks
       run: |
         pytest
-        mpirun -np 4 pytest
+        mpirun -np 3 pytest
