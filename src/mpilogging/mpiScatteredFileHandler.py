@@ -2,6 +2,7 @@ from mpi4py import MPI
 
 from .mpiFileHandler import MPIFileHandler
 
+
 class MPIScatteredFileHandler(MPIFileHandler):
     """
     A handler class which writes formatted logging records to distinct disk

@@ -1,6 +1,7 @@
 import logging
 from mpi4py import MPI
 
+
 class MPIFileHandler(logging.FileHandler):
     """
     A base handler class which is aware of MPI ranks.

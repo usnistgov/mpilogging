@@ -1,6 +1,7 @@
 import logging
 from mpi4py import MPI
 
+
 class MPIRankFilter(logging.Filter):
     """
     A filter class that injects information about MPI processes.
@@ -21,7 +22,7 @@ class MPIRankFilter(logging.Filter):
         """
         self.comm = comm
         super().__init__(name)
-    
+
     def filter(self, record):
         record.mpirank = self.comm.rank
         record.mpisize = self.comm.size

@@ -2,6 +2,7 @@ from mpi4py import MPI
 
 from .mpiFileHandler import MPIFileHandler
 
+
 class MPIGatheredFileHandler(MPIFileHandler):
     """
     A handler class which gathers formatted logging records from all MPI ranks

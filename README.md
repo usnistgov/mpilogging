@@ -36,7 +36,7 @@ log.info("an info message")
 If this script is invoked with `mpirun -np 3`, then three files will be
 created in the local working directory, one for each rank,
 
-```
+```output
 mpilogging.0_of_3.log
 mpilogging.1_of_3.log
 mpilogging.2_of_3.log
@@ -72,7 +72,7 @@ log.info("an info message")
 If invoked with `mpirun -np 3`, this would result in a single log file
 `mpilogging.log`, containing
 
-```
+```output
 0 of 3 : DEBUG : a debug message
 1 of 3 : DEBUG : a debug message
 2 of 3 : DEBUG : a debug message
