@@ -57,8 +57,8 @@ from mpilogging import MPIGatheredFileHandler, MPIRankFilter
 log = logging.getLogger("mpilogging")
 
 handler = MPIGatheredFileHandler(filename="mpilogging.log")
-filter = MPIRankFilter()
-handler.addFilter(filter)
+mpifilter = MPIRankFilter()
+handler.addFilter(mpifilter)
 formatter = logging.Formatter("%(mpirank)d of %(mpisize)d : %(levelname)s : %(message)s")
 handler.setFormatter(formatter)
 log.addHandler(handler)

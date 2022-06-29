@@ -43,8 +43,8 @@ def test_gathered_logging(mpi_tmpdir):
     log = logging.getLogger("mpilogging")
     
     handler = MPIGatheredFileHandler(filename=filename)
-    filter = MPIRankFilter()
-    handler.addFilter(filter)
+    mpifilter = MPIRankFilter()
+    handler.addFilter(mpifilter)
     formatter = logging.Formatter("%(mpirank)d of %(mpisize)d : %(levelname)s : %(message)s")
     handler.setFormatter(formatter)
     log.addHandler(handler)
