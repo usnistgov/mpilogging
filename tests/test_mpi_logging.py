@@ -3,6 +3,7 @@ from mpi4py import MPI
 
 from mpilogging import MPIScatteredFileHandler, MPIGatheredFileHandler, MPIRankFilter
 
+
 def test_scattered_logging(mpi_tmpdir):
     """Test that log messages are recorded in a separate file by rank
     """
@@ -20,7 +21,7 @@ def test_scattered_logging(mpi_tmpdir):
 
     log.debug("a debug message")
     log.info("an info message")
-    
+
     filename = filepattern % {
         'mpirank': MPI.COMM_WORLD.rank,
         'mpisize': MPI.COMM_WORLD.size
@@ -41,7 +42,7 @@ def test_gathered_logging(mpi_tmpdir):
     # mpi_tmpdir is a pathlib.Path
     filename = str(mpi_tmpdir / "mpi.log")
     log = logging.getLogger("mpilogging")
-    
+
     handler = MPIGatheredFileHandler(filename=filename)
     mpifilter = MPIRankFilter()
     handler.addFilter(mpifilter)
@@ -53,9 +54,9 @@ def test_gathered_logging(mpi_tmpdir):
 
     log.debug("a debug message")
     log.info("an info message")
-    
+
     MPI.COMM_WORLD.Barrier()
-    
+
     with open(filename, mode='r') as fd:
         txt = fd.read()
 
@@ -71,4 +72,4 @@ def test_gathered_logging(mpi_tmpdir):
                           "mpisize": MPI.COMM_WORLD.size
                       })
 
-    assert txt.strip() == "\n".join(expect)    
+    assert txt.strip() == "\n".join(expect)
