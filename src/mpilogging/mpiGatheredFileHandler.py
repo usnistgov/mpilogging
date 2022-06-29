@@ -1,13 +1,14 @@
-import logging
 from mpi4py import MPI
 
-class MPIGatheredFileHandler(logging.FileHandler):
+from .mpiFileHandler import MPIFileHandler
+
+class MPIGatheredFileHandler(MPIFileHandler):
     """
     A handler class which gathers formatted logging records from all MPI ranks
     and writes them to a disk file on a single rank.
     """
 
-    def __init__(self, filename, *args, write_rank=0, **kwargs):
+    def __init__(self, filename, *args, write_rank=0, comm=MPI.COMM_WORLD, **kwargs):
         """Open the specified file and use it as the stream for logging.
 
         Warnings
@@ -22,21 +23,22 @@ class MPIGatheredFileHandler(logging.FileHandler):
         ----------
         filename : str
             The name of the file to open for logging.
-        write_rank : int
-            MPI rank that actually writes to the file (default: 0).
         *args
             Arguments are as described in the docstring of
             `~logging.FileHandler`.
+        write_rank : int
+            MPI rank that actually writes to the file (default: 0).
+        comm : MPI.Comm
+            MPI communicator to gather log records over.
         **kwargs
             Keyword arguments are as described in the docstring of
             `~logging.FileHandler`.
         """
         self.write_rank = write_rank
-        super().__init__(filename, **kwargs)
+        super().__init__(filename, *args, comm=comm, **kwargs)
 
     def emit(self, record):
-        comm = MPI.COMM_WORLD
-        records = comm.gather(record, root=self.write_rank)
-        if comm.rank == self.write_rank:
+        records = self.comm.gather(record, root=self.write_rank)
+        if self.comm.rank == self.write_rank:
             for rec in records:
                 super().emit(rec)

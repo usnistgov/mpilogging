@@ -7,9 +7,23 @@ class MPIRankFilter(logging.Filter):
 
     Adds additional context of `mpirank` and `mpisize` to logging records.
     """
+    def __init__(self, name='', comm=MPI.COMM_WORLD):
+        """Initialize filter.
+
+        Parameters
+        ----------
+        name : str
+            The name of the logger which, together with its children, will
+            have its events allowed through the filter.  If no name is
+            specified, allow every event.
+        comm : MPI.Comm
+            MPI communicator to add context about.
+        """
+        self.comm = comm
+        super().__init__(name)
     
     def filter(self, record):
-        record.mpirank = MPI.COMM_WORLD.rank
-        record.mpisize = MPI.COMM_WORLD.size
+        record.mpirank = self.comm.rank
+        record.mpisize = self.comm.size
 
         return True

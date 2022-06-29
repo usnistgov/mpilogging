@@ -1,13 +1,14 @@
-import logging
 from mpi4py import MPI
 
-class MPIScatteredFileHandler(logging.FileHandler):
+from .mpiFileHandler import MPIFileHandler
+
+class MPIScatteredFileHandler(MPIFileHandler):
     """
     A handler class which writes formatted logging records to distinct disk
     files for each MPI rank.
     """
 
-    def __init__(self, filepattern, *args, **kwargs):
+    def __init__(self, filepattern, *args, comm=MPI.COMM_WORLD, **kwargs):
         """Open the specified file and use it as the stream for logging.
 
         Parameters
@@ -21,6 +22,8 @@ class MPIScatteredFileHandler(logging.FileHandler):
         *args
             Arguments are as described in the docstring of
             `~logging.FileHandler`.
+        comm : MPI.Comm
+            MPI communicator to scatter log records over.
         **kwargs
             Keyword arguments are as described in the docstring of
             `~logging.FileHandler`.
@@ -29,7 +32,7 @@ class MPIScatteredFileHandler(logging.FileHandler):
             raise TypeError("Expected `filepattern`, instead of `filename`")
 
         filename = filepattern % {
-            'mpirank': MPI.COMM_WORLD.rank,
-            'mpisize': MPI.COMM_WORLD.size
+            'mpirank': comm.rank,
+            'mpisize': comm.size
         }
-        super().__init__(filename, **kwargs)
+        super().__init__(filename, *args, comm=comm, **kwargs)
