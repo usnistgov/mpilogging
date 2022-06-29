@@ -81,8 +81,9 @@ If invoked with `mpirun -np 3`, this would result in a single log file
 2 of 3 : INFO : an info message
 ```
 
-**Warning:** Be aware that the `MPIGatheredFileHandler` will deadlock if
-all ranks do not log at the same time.  If this is a concern, then
+**Warning:** Be aware that the `MPIGatheredFileHandler` will deadlock if an
+event is not logged by all ranks, e.g., if it is made within a conditional
+that not all ranks branch into.  If this is a concern, then
 `MPIScatteredFileHandler` is recommended.
 
 ## Testing

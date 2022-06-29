@@ -13,8 +13,9 @@ class MPIGatheredFileHandler(logging.FileHandler):
         Warnings
         --------
 
-        This `~logging.Handler` is prone to deadlocks if all ranks do not
-        log at the same time.  If this is a concern, consider using
+        This `~logging.Handler` is prone to deadlocks if an event is not
+        logged by all ranks, e.g., if it is made within a conditional that
+        not all ranks branch into.  If this is a concern, consider using
         `~.mpiScatteredFileHandler.MPIScatteredFileHandler` instead.
 
         Parameters
