@@ -38,5 +38,5 @@ class MPIGatheredFileHandler(logging.FileHandler):
         comm = MPI.COMM_WORLD
         records = comm.gather(record, root=self.write_rank)
         if comm.rank == self.write_rank:
-            for record in records:
-                super().emit(record)
+            for rec in records:
+                super().emit(rec)
